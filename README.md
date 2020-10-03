@@ -1,2 +1,15 @@
-# admin-fe
-后台管理系统前端
+# umi project
+
+## Getting Started
+
+Install dependencies,
+
+```bash
+$ yarn
+```
+
+Start the dev server,
+
+```bash
+$ yarn start
+```
