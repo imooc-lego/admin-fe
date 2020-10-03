@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Input, Table, Row, Col } from 'antd'
-import styles from './style.less'
+import styles from '../pages.less'
 
 const { Search } = Input
 
@@ -73,12 +73,12 @@ export default () => {
             key: 'city',
         },
         {
-            title: '注册时间',
+            title: '注册时间', // 需要 format ！！！
             dataIndex: 'createdAt',
             key: 'createdAt',
         },
         {
-            title: '最后登录时间',
+            title: '最后登录时间', // 需要 format ！！！
             dataIndex: 'latestLoginAt',
             key: 'latestLoginAt',
         },
@@ -114,11 +114,11 @@ export default () => {
 
     return (
         <div>
-            <div className={styles.buttonContainer}>
+            <div className={styles.tableButtonContainer}>
                 <Row>
                     <Col span={16}>
-                        <Button>解除冻结</Button>
                         <Button type="danger">冻结用户</Button>
+                        <Button>解除冻结</Button>
                     </Col>
                     <Col span={8} style={{ textAlign: 'right' }}>
                         <Search
