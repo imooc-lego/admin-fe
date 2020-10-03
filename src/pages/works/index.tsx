@@ -84,7 +84,7 @@ export default () => {
             },
         },
         {
-            title: '预览',
+            title: '预览', // 发布的可以查看线上 url ？？
             dataIndex: 'id',
             key: 'id',
             render: (id: string) => (
