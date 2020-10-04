@@ -14,6 +14,10 @@ export default defineConfig({
     },
     routes: [
         {
+            path: '/login',
+            component: '@/pages/login/index',
+        },
+        {
             path: '/',
             name: '首页',
             icon: 'dashboard',

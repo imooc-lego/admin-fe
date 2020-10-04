@@ -132,7 +132,10 @@ export default () => {
             <div className={styles.tableButtonContainer}>
                 <Row>
                     <Col span={16}>
-                        <Button type="danger">强制下线</Button>
+                        {/* status===2 发布状态，才能执行强制下线，status = 3 */}
+                        {/* 清空发布作品的 redis 缓存，重要！！！ */}
+                        <Button type="danger">强制下线</Button>{' '}
+                        {/* 恢复，即 status 3 -> 2 */}
                         <Button>恢复</Button>
                     </Col>
                     <Col span={8} style={{ textAlign: 'right' }}>
