@@ -1,15 +1,6 @@
-# umi project
+# imooc-lego admin fe
 
-## Getting Started
+## 本地运行
 
-Install dependencies,
-
-```bash
-$ yarn
-```
-
-Start the dev server,
-
-```bash
-$ yarn start
-```
+- 本地运行（启动 mock）`npm start`
+- 本地运行（禁用 mock）`npm run dev-no-mock`

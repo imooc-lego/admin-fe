@@ -3,6 +3,7 @@
  * @author 双越
  */
 
+import { message } from 'antd'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 import { getItem, setItem } from './localStorage'
 import { TOKEN_KEY_LOCAL_STORAGE } from '../config/constants'
@@ -42,11 +43,17 @@ async function ajax(
 
     // 发送请求
     const res = await axios(conf)
+    if (res.status !== 200) {
+        console.error(res)
+        message.error('请求状态码错误') // 弹出错误
+    }
 
     // 处理结果
     const { data: resData } = res
     if (resData.errno === 0) return resData.data
     console.error('请求错误', resData.errno, resData.message)
+    message.error(resData.message) // 弹出错误
+
     throw new Error(resData.message)
 }
 

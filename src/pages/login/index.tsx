@@ -1,8 +1,12 @@
 import React from 'react'
+import { history } from 'umi'
 import styles from './style.less'
 import { Form, Input, Button, Typography, message } from 'antd'
+import { getUserInfoService, loginService } from '@/service/user'
+import { setAuthorizationToken } from '@/utils/ajax'
 
 const { Title } = Typography
+
 const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
@@ -11,11 +15,26 @@ const tailLayout = {
     wrapperCol: { offset: 4, span: 20 },
 }
 
+interface LoginInfo {
+    username: string
+    password: string
+}
+
 export default () => {
-    // 登录成功
-    const onFinish = (values: object) => {
+    // 如果已登录，则跳转到首页
+    getUserInfoService().then(() => history.push('/'))
+
+    // 执行登录
+    const onFinish = async (values: LoginInfo) => {
         const { username, password } = values
-        console.log(username, password)
+        const data = await loginService(username, password)
+        const { token } = data
+        if (token) {
+            setAuthorizationToken(token) // 登录成功，保存 token
+            history.push('/')
+        } else {
+            message.error('未找到 token')
+        }
     }
 
     // 联系管理员

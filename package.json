@@ -2,7 +2,9 @@
   "private": true,
   "scripts": {
     "start": "umi dev",
-    "build": "umi build",
+    "dev-no-mock": "cross-env UMI_ENV=dev-no-mock umi dev",
+    "prd-dev": "cross-env UMI_ENV=prd-dev umi build",
+    "build": "cross-env UMI_ENV=production umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",

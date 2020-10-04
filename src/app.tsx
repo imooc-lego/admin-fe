@@ -1,7 +1,16 @@
 import React from 'react'
+import { history } from 'umi'
+import { getUserInfoService } from './service/user'
 
-export function render(oldRender: Function) {
-    oldRender()
+export async function render(oldRender: Function) {
+    try {
+        const userInfo = await getUserInfoService()
+        console.log('userInfo...', userInfo)
+        oldRender()
+    } catch (ex) {
+        history.push('/login')
+        oldRender()
+    }
 }
 
 export const layout = {
