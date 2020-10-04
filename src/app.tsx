@@ -1,11 +1,11 @@
 import React from 'react'
 import { history } from 'umi'
-import { getUserInfoService } from './service/user'
+import { getUserInfoService } from '@/service/user'
+import UserInfo from '@/components/userInfo'
 
 export async function render(oldRender: Function) {
     try {
-        const userInfo = await getUserInfoService()
-        console.log('userInfo...', userInfo)
+        await getUserInfoService()
         oldRender()
     } catch (ex) {
         history.push('/login')
@@ -14,10 +14,8 @@ export async function render(oldRender: Function) {
 }
 
 export const layout = {
-    logout: () => {
-        alert('logout')
-    },
+    // 右上角显示用户名
     rightRender: () => {
-        return <p onClick={layout.logout}>右上角用户信息</p>
+        return <UserInfo />
     },
 }
