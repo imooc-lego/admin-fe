@@ -4,44 +4,45 @@
  */
 
 export default {
-    // 每月作品创建和发布的统计
-    'GET /api/works/getCount': {
+    // 获取模板总数
+    'GET /api/template/getCount': {
         errno: 0,
         data: {
-            created: 12001,
-            published: 8001,
+            count: 2601,
+            use: 10501,
         },
     },
 
-    'GET /api/works/getMonthlyCount': {
+    // 获取每月的数据
+    'GET /api/template/getMonthlyCount': {
         errno: 0,
         data: [
             {
                 month: '2020-08',
                 data: {
-                    created: 1200,
-                    published: 800,
+                    count: 100,
+                    use: 530,
                 },
             },
             {
                 month: '2020-09',
                 data: {
-                    created: 1300,
-                    published: 830,
+                    count: 300,
+                    use: 1680,
                 },
             },
             {
                 month: '2020-10',
                 data: {
-                    created: 1440,
-                    published: 900,
+                    count: 350,
+                    use: 1560,
                 },
             },
             {
                 month: '2020-11',
                 data: {
-                    created: 2100,
-                    published: 1600,
+                    count: 300,
+                    use: 1200,
                 },
             },
         ],

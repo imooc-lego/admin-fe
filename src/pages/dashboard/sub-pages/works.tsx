@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Row, Col, Typography } from 'antd'
 import styles from '../index.less'
 import Chart from '@/components/chart'
-import { getWorksCreatedStat } from '@/service/works'
+import { getMonthlyCount, getCount } from '@/service/works'
 
 const { Title } = Typography
 
@@ -15,7 +15,15 @@ export default () => {
 
     // 获取数据并修改 state
     useEffect(() => {
-        getWorksCreatedStat().then((data: Array<any>) => {
+        // 总数
+        getCount().then((data: any) => {
+            const { created, published } = data
+            setCreatedCount(created)
+            setPublishedCount(published)
+        })
+
+        // 报表
+        getMonthlyCount().then((data: Array<any>) => {
             // 饼图
             const pieData = parsePieOpt(data)
             setPieOpt(pieData)
@@ -35,10 +43,6 @@ export default () => {
             created += itemData.created || 0
             published += itemData.published || 0
         })
-
-        // 设置总数
-        setCreatedCount(created)
-        setPublishedCount(published)
 
         return {
             legend: {

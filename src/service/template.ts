@@ -1,5 +1,5 @@
 /**
- * @description 作品相关接口
+ * @description 模板相关接口
  * @author 双越
  */
 
@@ -10,7 +10,7 @@ import host from '../config/host'
  * 获取总数
  */
 export async function getCount() {
-    const url = `${host}/api/works/getCount`
+    const url = `${host}/api/template/getCount`
     const data = ajaxGet(url)
     return data
 }
@@ -19,7 +19,7 @@ export async function getCount() {
  * 获取作品创建和发布的统计
  */
 export async function getMonthlyCount() {
-    const url = `${host}/api/works/getMonthlyCount`
+    const url = `${host}/api/template/getMonthlyCount`
     const data = ajaxGet(url)
     return data
 }

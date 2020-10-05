@@ -1,36 +1,60 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Row, Col, Typography } from 'antd'
-import echarts from 'echarts'
 import styles from '../index.less'
+import Chart from '@/components/chart'
+import { getMonthlyCount, getCount } from '@/service/template'
 
 const { Title } = Typography
 
 export default () => {
+    // 初始化 state
+    const [createdCount, setCreatedCount] = useState(0)
+    const [useCount, setUseCount] = useState(0)
+    const [monthlyOpt, setMonthlyOpt] = useState({})
+
     useEffect(() => {
-        // 每月模板创建
-        const templatesChart = echarts.init(
-            document.getElementById('chart-templates'),
-        )
-        templatesChart.setOption({
-            tooltip: {},
-            xAxis: {
-                data: ['2020-08', '2020-09', '2020-10', '2020-11'],
-            },
-            yAxis: {},
-            series: [
-                {
-                    type: 'bar',
-                    data: [100, 300, 350, 300],
-                },
-            ],
+        // 获取总数
+        getCount().then(data => {
+            const { count, use } = data
+            setCreatedCount(count)
+            setUseCount(use)
+        })
+
+        // 获取报表数据
+        getMonthlyCount().then(data => {
+            const barData = parseMonthlyOpt(data)
+            setMonthlyOpt(barData)
         })
     }, [])
+
+    // 处理报表数据
+    function parseMonthlyOpt(data: Array<any>): any {
+        const arr = data.map(item => {
+            const { month, data: monthData } = item
+            return [month, monthData.count, monthData.use]
+        })
+
+        return {
+            legend: {},
+            tooltip: {},
+            dataset: {
+                source: [['月', '发布', '被使用'], ...arr],
+            },
+            xAxis: { type: 'category' },
+            yAxis: {},
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [{ type: 'bar' }, { type: 'bar' }],
+        }
+    }
 
     return (
         <>
             <Row>
                 <Col span={24}>
-                    <Title level={2}>模板总数 2600 ，使用次数 10500</Title>
+                    <Title level={2}>
+                        模板总数 {createdCount} ，使用次数 {useCount}
+                    </Title>
                 </Col>
             </Row>
             <Row>
@@ -38,10 +62,7 @@ export default () => {
                     <Title level={3} className={styles.center}>
                         每月模板创建
                     </Title>
-                    <div
-                        id="chart-templates"
-                        className={styles.chartContainer}
-                    ></div>
+                    <Chart opt={monthlyOpt}></Chart>
                 </Col>
             </Row>
         </>
