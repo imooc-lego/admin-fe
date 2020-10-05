@@ -41,9 +41,21 @@ export default (props: propsTypes) => {
             key: item.id || item._id,
             ...item,
         }
-    })
+    }) as never[]
 
     const { pageIndex = 0, pageSize = DEFAULT_PAGE_SIZE, total = 0 } = pageData
+
+    // 切换页
+    function pageIndexChangeHandler(
+        pageIndex: number,
+        pageSize?: number | undefined,
+    ): void {
+        if (!onPageIndexChange) return
+        onPageIndexChange(
+            pageIndex - 1, // 从 0 开始计算
+            pageSize,
+        )
+    }
 
     return (
         <Table
@@ -58,7 +70,7 @@ export default (props: propsTypes) => {
                 pageSize,
                 total,
                 showSizeChanger: false,
-                onChange: onPageIndexChange,
+                onChange: pageIndexChangeHandler,
             }}
         />
     )

@@ -47,8 +47,10 @@ export default () => {
 
     // 冻结用户
     function frozeUsers() {
-        const ids = selectedRowIds.split(',')
+        const ids = selectedRowIds.split(',').filter(i => i)
         const length = ids.length
+        if (length === 0) return
+
         if (
             !confirm(
                 `【危险】是否要冻结 id 为“${selectedRowIds}”的 ${length} 个用户？`,
@@ -66,8 +68,10 @@ export default () => {
 
     // 解除冻结
     function unFrozeUsers() {
-        const ids = selectedRowIds.split(',')
+        const ids = selectedRowIds.split(',').filter(i => i)
         const length = ids.length
+        if (length === 0) return
+
         if (
             !confirm(
                 `是否要解除冻结，id 为“${selectedRowIds}”的 ${length} 个用户？`,

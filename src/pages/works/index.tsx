@@ -1,130 +1,181 @@
-import React from 'react'
-import { Button, Input, Table, Row, Col } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Button, Input, Row, Col, message } from 'antd'
 import styles from '../pages.less'
+import { ColumnsType } from 'antd/es/table'
+import MyTable from '@/components/table'
+import columns from './tableColumns'
+import {
+    getWorksList,
+    forceOffline as forceOfflineService,
+    undoForceOffline as undoForceOfflineService,
+} from '@/service/works'
 
 const { Search } = Input
 
+// 处理 columns 配置，有些字段需要宣传出链接
+function parseColumns(columns: ColumnsType): ColumnsType<never> {
+    return columns.map((item: any) => {
+        if (item.title === '查看网页') {
+            return {
+                ...item,
+                render: (id: string, row: any) => {
+                    const { uuid, status } = row
+                    let url = ''
+                    let text = ''
+                    switch (status) {
+                        case '0':
+                            break // 已删除
+                        case '3':
+                            break // 强制下线
+                        case '2':
+                            url = `http://182.92.168.192:8082/p/${id}-${uuid}?channel=0` // 发布了，线上链接
+                            text = '线上链接'
+                            break
+                        default:
+                            url = `http://182.92.168.192:8082/p/preview/${id}-${uuid}` // 未发布，预览
+                            text = '预览'
+                            break
+                    }
+
+                    if (url)
+                        return (
+                            <a href={url} target="_blank">
+                                {text}
+                            </a>
+                        )
+                    return ''
+                },
+            }
+        }
+        if (item.title === '缩略图') {
+            return {
+                ...item,
+                render: (src: string) => {
+                    if (!src) return ''
+                    return (
+                        <a href={src} target="_blank">
+                            查看缩略图
+                        </a>
+                    )
+                },
+            }
+        }
+        return item
+    }) as ColumnsType<never>
+}
+
 export default () => {
-    const dataSource = [
-        {
-            key: '1', // id
-            id: '1',
-            uuid: 'xxx',
-            title: '作品1',
-            coverImg: 'xxx',
-            author: '15500001111',
-            isTemplate: false,
-            status: '1',
-            createdAt: '2020-09-30',
-            latestPublishAt: '2020-10-03',
-        },
-        {
-            key: '2', // id
-            id: '2',
-            uuid: 'yyy',
-            title: '作品2',
-            coverImg: 'yyy',
-            author: '15500001112',
-            isTemplate: false,
-            status: '2',
-            createdAt: '2020-09-30',
-            latestPublishAt: '2020-10-03',
-        },
-    ]
+    // 修改 columns 配置
+    const formatColumns = parseColumns(columns)
 
-    const columns = [
-        {
-            title: 'id',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: 'uuid',
-            dataIndex: 'uuid',
-            key: 'uuid',
-        },
-        {
-            title: '标题',
-            dataIndex: 'title',
-            key: 'title',
-        },
-        {
-            title: '缩略图',
-            dataIndex: 'coverImg',
-            key: 'coverImg',
-            render: (src: string) => {
-                if (!src) return ''
-                return (
-                    <a href={src} target="_blank">
-                        缩略图
-                    </a>
-                )
-            },
-        },
-        {
-            title: '作者用户名',
-            dataIndex: 'author',
-            key: 'author',
-        },
-        {
-            title: '是否模板',
-            dataIndex: 'isTemplate',
-            key: 'isTemplate',
-            render: (t: boolean) => (t ? '是' : '否'),
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-            render: (s: string) => {
-                const status = parseInt(s, 10)
-                if (status === 0) return '删除'
-                if (status === 1) return '未发布'
-                if (status === 2) return '发布'
-            },
-        },
-        {
-            title: '预览', // 发布的可以查看线上 url ？？
-            dataIndex: 'id',
-            key: 'id',
-            render: (id: string) => (
-                <a href={id} target="_blank">
-                    拼接 url {id}
-                </a>
-            ),
-        },
-        {
-            title: '创建时间', // 需要 format ！！！
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-        },
-        {
-            title: '最后发布时间', // 需要 format ！！！
-            dataIndex: 'latestPublishAt',
-            key: 'latestPublishAt',
-        },
-    ]
+    const [searchInputValue, setSearchInputValue] = useState('')
+    const [keyword, setKeyword] = useState('')
+    const [pageIndex, setPageIndex] = useState(0)
+    const [dataSource, setDataSource] = useState([])
+    const [total, setTotal] = useState(0)
+    const [selectedRowIds, setSelectedRowIds] = useState('')
 
-    // 选择行
-    const rowSelection = {
-        onChange: (selectedRowKeys: string, selectedRows: Array<any>) => {
-            console.log(
-                `selectedRowKeys: ${selectedRowKeys}`,
-                'selectedRows: ',
-                selectedRows,
-            )
-        },
+    useEffect(() => {
+        // 获取列表
+        getWorksList(keyword, pageIndex).then((data: any) => {
+            const { count, list } = data
+            setTotal(count)
+            setDataSource(list)
+        })
+    }, [keyword, pageIndex])
+
+    // 搜索
+    function onSearch() {
+        setKeyword(searchInputValue)
     }
 
-    // 分页
-    const pageData = {
-        defaultCurrent: 1,
-        pageSize: 10,
-        total: 60,
-        showSizeChanger: false,
-        onChange: (page: number, pageSize: number): void => {
-            console.log('page', page, 'pageSize', pageSize)
-        },
+    // 表格 - 分页
+    function onPageIndexChange(pageIndex: number) {
+        setPageIndex(pageIndex)
+    }
+
+    // 表格 - 选择行
+    function onRowSelected(
+        selectedRowKeys: React.Key[],
+        // selectedRows: never[],
+    ) {
+        setSelectedRowIds(selectedRowKeys.join(','))
+    }
+
+    // 强制下线
+    function forceOffline() {
+        const ids = selectedRowIds.split(',').filter(i => i)
+        const length = ids.length
+        if (length === 0) return
+
+        // 检查，只有 status===2 发布状态，才能执行强制下线
+        const works = getWorksByIds(ids)
+        const flag = works.every((item: any) => item.status === '2')
+        if (!flag) {
+            message.error('操作失败，必须选择【发布】状态的作品')
+            return
+        }
+
+        // confirm
+        if (
+            !confirm(
+                `【危险】是否强制下线，id 为“${selectedRowIds}”的 ${length} 个作品？`,
+            )
+        )
+            return
+
+        // 发送请求
+        forceOfflineService(ids).then(() => {
+            message.success('已强制下线')
+
+            // 修改表格数据
+            changeStatus(ids, '3')
+        })
+    }
+
+    // 恢复
+    function undoForceOffline() {
+        const ids = selectedRowIds.split(',').filter(i => i)
+        const length = ids.length
+        if (length === 0) return
+
+        // 检查，只有 status===3 才能恢复
+        const works = getWorksByIds(ids)
+        const flag = works.every((item: any) => item.status === '3')
+        if (!flag) {
+            message.error('操作失败，必须选择【强制下线】状态的作品')
+            return
+        }
+
+        // confirm
+        if (!confirm(`是否恢复，id 为“${selectedRowIds}”的 ${length} 个作品？`))
+            return
+
+        // 发送请求
+        undoForceOfflineService(ids).then(() => {
+            message.success('已恢复')
+
+            // 修改表格数据
+            changeStatus(ids, '2')
+        })
+    }
+
+    // 根据 ids 获取作品
+    function getWorksByIds(ids: string[]) {
+        return dataSource.filter((item: any) => ids.includes(item.id))
+    }
+
+    // 修改表格数据的的 status
+    function changeStatus(ids: string[], status: string) {
+        const newDataSource = dataSource.map((item: any) => {
+            const curId = item.id
+            if (!ids.includes(curId)) return item
+            return {
+                ...item,
+                status,
+            }
+        })
+        setDataSource(newDataSource as never[])
     }
 
     return (
@@ -132,30 +183,29 @@ export default () => {
             <div className={styles.tableButtonContainer}>
                 <Row>
                     <Col span={16}>
-                        {/* status===2 发布状态，才能执行强制下线，status = 3 */}
-                        {/* 清空发布作品的 redis 缓存，重要！！！ */}
-                        <Button type="danger">强制下线</Button>{' '}
-                        {/* 恢复，即 status 3 -> 2 */}
-                        <Button>恢复</Button>
+                        <Button type="primary" danger onClick={forceOffline}>
+                            强制下线
+                        </Button>{' '}
+                        <Button onClick={undoForceOffline}>恢复</Button>
                     </Col>
                     <Col span={8} style={{ textAlign: 'right' }}>
                         <Search
+                            value={searchInputValue}
                             placeholder="输入 id/标题"
-                            onSearch={value => console.log(value)}
+                            onSearch={onSearch}
+                            onChange={e => setSearchInputValue(e.target.value)}
                             enterButton
-                            // style={{ width: 300 }}
+                            style={{ width: 400 }}
                         />
                     </Col>
                 </Row>
             </div>
-            <Table
-                rowSelection={{
-                    type: 'checkbox',
-                    ...rowSelection,
-                }}
+            <MyTable
                 dataSource={dataSource}
-                columns={columns}
-                pagination={pageData}
+                columns={formatColumns}
+                pageData={{ pageIndex, total }}
+                onRowSelected={onRowSelected}
+                onPageIndexChange={onPageIndexChange}
             />
         </div>
     )
