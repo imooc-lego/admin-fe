@@ -1,5 +1,5 @@
 /**
- * @description mock user API
+ * @description mock admin API
  * @author 双越
  */
 

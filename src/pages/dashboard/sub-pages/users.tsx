@@ -1,55 +1,79 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Row, Col, Typography } from 'antd'
-import echarts from 'echarts'
 import styles from '../index.less'
+import Chart from '@/components/chart'
+import {
+    getCount,
+    getCreatedCountMonthly,
+    getActiveCountMonthly,
+} from '@/service/users'
 
 const { Title } = Typography
 
 export default () => {
+    const [createdCount, setCreatedCount] = useState(0)
+    const [createdChartData, setCreatedChartData] = useState({})
+    const [activeChartData, setActiveChartData] = useState({})
+
     useEffect(() => {
-        // 每月新增用户
-        const newUserChart = echarts.init(
-            document.getElementById('chart-new-user'),
-        )
-        newUserChart.setOption({
+        // 总数
+        getCount().then(data => setCreatedCount(data.count))
+
+        // 报表
+        getCreatedCountMonthly().then((data: Array<object>) => {
+            const chartData = parseCreatedChartData(data)
+            setCreatedChartData(chartData)
+        })
+        getActiveCountMonthly().then((data: Array<object>) => {
+            const chartData = parseActiveChartData(data)
+            setActiveChartData(chartData)
+        })
+    }, [])
+
+    function parseCreatedChartData(data: Array<any>) {
+        const xArr = data.map(item => item.month)
+        const seriesArr = data.map(item => item.data.count)
+
+        return {
             tooltip: {},
             xAxis: {
-                data: ['2020-08', '2020-09', '2020-10', '2020-11'],
+                data: xArr,
             },
             yAxis: {},
             series: [
                 {
                     name: '新增用户',
                     type: 'bar',
-                    data: [100, 300, 350, 300],
+                    data: seriesArr,
                 },
             ],
-        })
+        }
+    }
 
-        // 每月活跃用户
-        const activeUserChart = echarts.init(
-            document.getElementById('chart-active-user'),
-        )
-        activeUserChart.setOption({
+    function parseActiveChartData(data: Array<any>) {
+        const xArr = data.map(item => item.month)
+        const seriesArr = data.map(item => item.data.count)
+
+        return {
             tooltip: {},
             xAxis: {
-                data: ['2020-08', '2020-09', '2020-10', '2020-11'],
+                data: xArr,
             },
             yAxis: {},
             series: [
                 {
                     type: 'line',
-                    data: [100, 300, 350, 300],
+                    data: seriesArr,
                 },
             ],
-        })
-    }, [])
+        }
+    }
 
     return (
         <>
             <Row>
                 <Col span={24}>
-                    <Title level={2}>用户总数 3000</Title>
+                    <Title level={2}>用户总数 {createdCount}</Title>
                 </Col>
             </Row>
             <Row>
@@ -57,19 +81,13 @@ export default () => {
                     <Title level={3} className={styles.center}>
                         每月新增用户
                     </Title>
-                    <div
-                        id="chart-new-user"
-                        className={styles.chartContainer}
-                    ></div>
+                    <Chart opt={createdChartData}></Chart>
                 </Col>
                 <Col span={12}>
                     <Title level={3} className={styles.center}>
                         每月活跃用户
                     </Title>
-                    <div
-                        id="chart-active-user"
-                        className={styles.chartContainer}
-                    ></div>
+                    <Chart opt={activeChartData}></Chart>
                 </Col>
             </Row>
         </>
