@@ -4,14 +4,14 @@
  */
 
 import { ajaxGet, ajaxPost } from '../utils/ajax'
-import host from '../config/host'
+import { APIHost } from '../config/host'
 import { DEFAULT_PAGE_SIZE } from '@/config/constants'
 
 /**
  * 获取用户总数
  */
 export async function getCount() {
-    const url = `${host}/api/users/getCount`
+    const url = `${APIHost}/api/users/getCount`
     const data = await ajaxGet(url)
     return data
 }
@@ -20,7 +20,7 @@ export async function getCount() {
  * 获取每月新用户
  */
 export async function getCreatedCountMonthly() {
-    const url = `${host}/api/users/getCreatedCountMonthly`
+    const url = `${APIHost}/api/users/getCreatedCountMonthly`
     const data = await ajaxGet(url)
     return data
 }
@@ -29,7 +29,7 @@ export async function getCreatedCountMonthly() {
  * 获取每月活跃用户
  */
 export async function getActiveCountMonthly() {
-    const url = `${host}/api/users/getActiveCountMonthly`
+    const url = `${APIHost}/api/users/getActiveCountMonthly`
     const data = await ajaxGet(url)
     return data
 }
@@ -45,7 +45,7 @@ export async function getUsersList(
     pageIndex: number = 0,
     pageSize: number = DEFAULT_PAGE_SIZE,
 ) {
-    const url = `${host}/api/users`
+    const url = `${APIHost}/api/users`
     const data = await ajaxGet(url, { keyword, pageIndex, pageSize })
     return data
 }
@@ -55,7 +55,7 @@ export async function getUsersList(
  * @param ids 用户 id 数组
  */
 export async function frozeUsers(ids: string[]) {
-    const url = `${host}/api/users/froze`
+    const url = `${APIHost}/api/users/froze`
     const data = await ajaxPost(url, { ids: ids.join(',') })
     return data
 }
@@ -65,7 +65,7 @@ export async function frozeUsers(ids: string[]) {
  * @param ids 用户 id 数组
  */
 export async function unFrozeUsers(ids: string[]) {
-    const url = `${host}/api/users/unFroze`
+    const url = `${APIHost}/api/users/unFroze`
     const data = await ajaxPost(url, { ids: ids.join(',') })
     return data
 }

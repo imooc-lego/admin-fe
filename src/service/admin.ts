@@ -4,7 +4,7 @@
  */
 
 import { ajaxGet, ajaxPost } from '../utils/ajax'
-import host from '../config/host'
+import { APIHost } from '../config/host'
 
 // 缓存用户信息，防止重复获取
 let USER_INFO: any
@@ -15,7 +15,7 @@ let USER_INFO: any
 export async function getAdminInfo(): Promise<any> {
     if (USER_INFO != null) return USER_INFO // 使用缓存
 
-    const url = `${host}/api/admin/getUserInfo`
+    const url = `${APIHost}/api/admin/getUserInfo`
     const data = await ajaxGet(url)
     USER_INFO = data // 缓存
     return data
@@ -27,7 +27,7 @@ export async function getAdminInfo(): Promise<any> {
  * @param password password
  */
 export async function login(username: string, password: string): Promise<any> {
-    const url = `${host}/api/admin/login`
+    const url = `${APIHost}/api/admin/login`
     const data = await ajaxPost(url, { username, password })
     return data
 }

@@ -4,14 +4,14 @@
  */
 
 import { ajaxGet, ajaxPost } from '../utils/ajax'
-import host from '../config/host'
+import { APIHost } from '../config/host'
 import { DEFAULT_PAGE_SIZE } from '@/config/constants'
 
 /**
  * 获取总数
  */
 export async function getCount() {
-    const url = `${host}/api/works/getCount`
+    const url = `${APIHost}/api/works/getCount`
     const data = await ajaxGet(url)
     return data
 }
@@ -20,7 +20,7 @@ export async function getCount() {
  * 获取作品创建和发布的统计
  */
 export async function getMonthlyCount() {
-    const url = `${host}/api/works/getMonthlyCount`
+    const url = `${APIHost}/api/works/getMonthlyCount`
     const data = await ajaxGet(url)
     return data
 }
@@ -36,7 +36,7 @@ export async function getWorksList(
     pageIndex: number = 0,
     pageSize: number = DEFAULT_PAGE_SIZE,
 ) {
-    const url = `${host}/api/works`
+    const url = `${APIHost}/api/works`
     const data = await ajaxGet(url, { keyword, pageIndex, pageSize })
     return data
 }
@@ -46,7 +46,7 @@ export async function getWorksList(
  * @param ids 作品 ids 数组
  */
 export async function forceOffline(ids: string[]) {
-    const url = `${host}/api/works/forceOffline`
+    const url = `${APIHost}/api/works/forceOffline`
     const data = await ajaxPost(url, { ids: ids.join(',') })
     return data
 }
@@ -56,7 +56,7 @@ export async function forceOffline(ids: string[]) {
  * @param ids 作品 ids 数组
  */
 export async function undoForceOffline(ids: string[]) {
-    const url = `${host}/api/works/undoForceOffline`
+    const url = `${APIHost}/api/works/undoForceOffline`
     const data = await ajaxPost(url, { ids: ids.join(',') })
     return data
 }

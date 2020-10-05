@@ -9,6 +9,7 @@ import {
     forceOffline as forceOfflineService,
     undoForceOffline as undoForceOfflineService,
 } from '@/service/works'
+import { H5Host } from '@/config/host'
 
 const { Search } = Input
 
@@ -28,11 +29,11 @@ function parseColumns(columns: ColumnsType): ColumnsType<never> {
                         case '3':
                             break // 强制下线
                         case '2':
-                            url = `http://182.92.168.192:8082/p/${id}-${uuid}?channel=0` // 发布了，线上链接
+                            url = `${H5Host}/p/${id}-${uuid}?channel=0` // 发布了，线上链接
                             text = '线上链接'
                             break
                         default:
-                            url = `http://182.92.168.192:8082/p/preview/${id}-${uuid}` // 未发布，预览
+                            url = `${H5Host}/p/preview/${id}-${uuid}` // 未发布，预览
                             text = '预览'
                             break
                     }
