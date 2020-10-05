@@ -11,7 +11,7 @@ import host from '../config/host'
  */
 export async function getCount() {
     const url = `${host}/api/works/getCount`
-    const data = ajaxGet(url)
+    const data = await ajaxGet(url)
     return data
 }
 
@@ -20,6 +20,6 @@ export async function getCount() {
  */
 export async function getMonthlyCount() {
     const url = `${host}/api/works/getMonthlyCount`
-    const data = ajaxGet(url)
+    const data = await ajaxGet(url)
     return data
 }

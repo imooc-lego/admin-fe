@@ -1,115 +1,99 @@
-import React from 'react'
-import { Button, Input, Table, Row, Col } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Button, Input, Row, Col, message } from 'antd'
 import styles from '../pages.less'
+import {
+    getUsersList,
+    frozeUsers as frozeUsersService,
+    unFrozeUsers as unFrozeUsersService,
+} from '@/service/users'
+import MyTable from '@/components/table'
+import columns from './tableColumns'
 
 const { Search } = Input
 
 export default () => {
-    const dataSource = [
-        {
-            key: '3', // id
-            username: 'zhangsan',
-            nickName: '张三',
-            phoneNumber: '15500001111',
-            gender: '0',
-            city: '北京',
-            createdAt: '2020-09-23',
-            latestLoginAt: '2020-10-02',
-            isFrozen: false,
-        },
-        {
-            key: '4', // id
-            username: 'lisi',
-            nickName: '李四',
-            phoneNumber: '15500002222',
-            gender: '1',
-            city: '杭州',
-            createdAt: '2020-09-23',
-            latestLoginAt: '2020-10-02',
-            isFrozen: false,
-        },
-        {
-            key: '5', // id
-            username: 'aaa',
-            nickName: 'AAA',
-            phoneNumber: '15500003333',
-            gender: '2',
-            city: '广州',
-            createdAt: '2020-09-23',
-            latestLoginAt: '2020-10-02',
-            isFrozen: true,
-        },
-    ]
+    const [searchInputValue, setSearchInputValue] = useState('')
+    const [keyword, setKeyword] = useState('')
+    const [pageIndex, setPageIndex] = useState(0)
+    const [dataSource, setDataSource] = useState([])
+    const [total, setTotal] = useState(0)
+    const [selectedRowIds, setSelectedRowIds] = useState('')
 
-    const columns = [
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-        },
-        {
-            title: '昵称',
-            dataIndex: 'nickName',
-            key: 'nickName',
-        },
-        {
-            title: '手机号',
-            dataIndex: 'phoneNumber',
-            key: 'phoneNumber',
-        },
-        {
-            title: '性别',
-            dataIndex: 'gender',
-            key: 'gender',
-            render: (text: string) => {
-                if (text === '1') return '男'
-                if (text === '2') return '女'
-                return '保密'
-            },
-        },
-        {
-            title: '城市',
-            dataIndex: 'city',
-            key: 'city',
-        },
-        {
-            title: '注册时间', // 需要 format ！！！
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-        },
-        {
-            title: '最后登录时间', // 需要 format ！！！
-            dataIndex: 'latestLoginAt',
-            key: 'latestLoginAt',
-        },
-        {
-            title: '冻结',
-            dataIndex: 'isFrozen',
-            key: 'isFrozen',
-            render: (f: boolean) => (f ? '是' : '否'),
-        },
-    ]
+    useEffect(() => {
+        getUsersList(keyword, pageIndex).then((data: any) => {
+            const { count, list } = data
+            setTotal(count)
+            setDataSource(list)
+        })
+    }, [keyword, pageIndex])
 
-    // 选择行
-    const rowSelection = {
-        onChange: (selectedRowKeys: string, selectedRows: Array<any>) => {
-            console.log(
-                `selectedRowKeys: ${selectedRowKeys}`,
-                'selectedRows: ',
-                selectedRows,
-            )
-        },
+    // 搜索
+    function onSearch() {
+        setKeyword(searchInputValue)
     }
 
-    // 分页
-    const pageData = {
-        defaultCurrent: 1,
-        pageSize: 10,
-        total: 60,
-        showSizeChanger: false,
-        onChange: (page: number, pageSize: number): void => {
-            console.log('page', page, 'pageSize', pageSize)
-        },
+    // 表格 - 分页
+    function onPageIndexChange(pageIndex: number) {
+        setPageIndex(pageIndex)
+    }
+
+    // 表格 - 选择行
+    function onRowSelected(
+        selectedRowKeys: React.Key[],
+        // selectedRows: never[],
+    ) {
+        setSelectedRowIds(selectedRowKeys.join(','))
+    }
+
+    // 冻结用户
+    function frozeUsers() {
+        const ids = selectedRowIds.split(',')
+        const length = ids.length
+        if (
+            !confirm(
+                `【危险】是否要冻结 id 为“${selectedRowIds}”的 ${length} 个用户？`,
+            )
+        )
+            return
+
+        frozeUsersService(ids).then(() => {
+            message.success('冻结成功')
+
+            // 修改表格数据
+            changeFrozenState(ids, true)
+        })
+    }
+
+    // 解除冻结
+    function unFrozeUsers() {
+        const ids = selectedRowIds.split(',')
+        const length = ids.length
+        if (
+            !confirm(
+                `是否要解除冻结，id 为“${selectedRowIds}”的 ${length} 个用户？`,
+            )
+        )
+            return
+
+        unFrozeUsersService(ids).then(() => {
+            message.success('已解除冻结')
+
+            // 修改表格数据
+            changeFrozenState(ids, false)
+        })
+    }
+
+    // 修改表格冻结数据
+    function changeFrozenState(ids: string[], isFrozen: boolean) {
+        const newDataSource = dataSource.map((item: any) => {
+            const curId = item.id
+            if (!ids.includes(curId)) return item
+            return {
+                ...item,
+                isFrozen,
+            }
+        })
+        setDataSource(newDataSource as never[])
     }
 
     return (
@@ -117,27 +101,29 @@ export default () => {
             <div className={styles.tableButtonContainer}>
                 <Row>
                     <Col span={16}>
-                        <Button type="danger">冻结用户</Button>
-                        <Button>解除冻结</Button>
+                        <Button type="primary" danger onClick={frozeUsers}>
+                            冻结用户
+                        </Button>
+                        <Button onClick={unFrozeUsers}>解除冻结</Button>
                     </Col>
                     <Col span={8} style={{ textAlign: 'right' }}>
                         <Search
+                            value={searchInputValue}
                             placeholder="输入 用户名/手机号/昵称"
-                            onSearch={value => console.log(value)}
+                            onSearch={onSearch}
+                            onChange={e => setSearchInputValue(e.target.value)}
                             enterButton
-                            // style={{ width: 300 }}
+                            style={{ width: 400 }}
                         />
                     </Col>
                 </Row>
             </div>
-            <Table
-                rowSelection={{
-                    type: 'checkbox',
-                    ...rowSelection,
-                }}
+            <MyTable
                 dataSource={dataSource}
                 columns={columns}
-                pagination={pageData}
+                pageData={{ pageIndex, total }}
+                onRowSelected={onRowSelected}
+                onPageIndexChange={onPageIndexChange}
             />
         </div>
     )

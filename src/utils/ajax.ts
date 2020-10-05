@@ -50,11 +50,11 @@ async function ajax(
 
     // 处理结果
     const { data: resData } = res
-    if (resData.errno === 0) return resData.data
+    if (resData.errno === 0) return resData.data || {}
     console.error('请求错误', resData.errno, resData.message)
     message.error(resData.message) // 弹出错误
 
-    throw new Error(resData.message)
+    // throw new Error(resData.message)
 }
 
 /**
