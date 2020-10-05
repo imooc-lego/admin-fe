@@ -262,23 +262,51 @@ export default () => {
                     </Modal>
                     <Row>
                         <Col span={16}>
-                            <Button type="primary" onClick={setPublic}>
+                            <Button
+                                type="primary"
+                                onClick={setPublic}
+                                disabled={isSelectedEmpty()}
+                            >
                                 设为公开展示
                             </Button>
-                            <Button type="primary" danger onClick={setPrivate}>
+                            <Button
+                                type="primary"
+                                danger
+                                onClick={setPrivate}
+                                disabled={isSelectedEmpty()}
+                            >
                                 禁止公开展示
                             </Button>
-                            <Button onClick={setHot}>设为 HOT</Button>
-                            <Button danger onClick={setNoHot}>
+                            <Button
+                                onClick={setHot}
+                                disabled={isSelectedEmpty()}
+                            >
+                                设为 HOT
+                            </Button>
+                            <Button
+                                danger
+                                onClick={setNoHot}
+                                disabled={isSelectedEmpty()}
+                            >
                                 取消 HOT
                             </Button>
-                            <Button onClick={setNew}>设为 NEW</Button>
-                            <Button danger onClick={setNoNew}>
+                            <Button
+                                onClick={setNew}
+                                disabled={isSelectedEmpty()}
+                            >
+                                设为 NEW
+                            </Button>
+                            <Button
+                                danger
+                                onClick={setNoNew}
+                                disabled={isSelectedEmpty()}
+                            >
                                 取消 NEW
                             </Button>
                             <Button
                                 type="primary"
                                 onClick={showOrderIndexModal}
+                                disabled={isSelectedEmpty()}
                             >
                                 修改排序参数
                             </Button>

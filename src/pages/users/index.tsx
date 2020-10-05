@@ -45,9 +45,20 @@ export default () => {
         setSelectedRowIds(selectedRowKeys.join(','))
     }
 
+    // 获取 ids
+    function getSelectedIdsArr(): string[] {
+        return selectedRowIds.split(',').filter(i => i)
+    }
+
+    // 是否选择了
+    function isSelectedEmpty(): boolean {
+        const ids = getSelectedIdsArr()
+        return ids.length === 0
+    }
+
     // 冻结用户
     function frozeUsers() {
-        const ids = selectedRowIds.split(',').filter(i => i)
+        const ids = getSelectedIdsArr()
         const length = ids.length
         if (length === 0) return
 
@@ -68,7 +79,7 @@ export default () => {
 
     // 解除冻结
     function unFrozeUsers() {
-        const ids = selectedRowIds.split(',').filter(i => i)
+        const ids = getSelectedIdsArr()
         const length = ids.length
         if (length === 0) return
 
@@ -105,10 +116,20 @@ export default () => {
             <div className={styles.tableButtonContainer}>
                 <Row>
                     <Col span={16}>
-                        <Button type="primary" danger onClick={frozeUsers}>
+                        <Button
+                            type="primary"
+                            danger
+                            onClick={frozeUsers}
+                            disabled={isSelectedEmpty()}
+                        >
                             冻结用户
                         </Button>
-                        <Button onClick={unFrozeUsers}>解除冻结</Button>
+                        <Button
+                            onClick={unFrozeUsers}
+                            disabled={isSelectedEmpty()}
+                        >
+                            解除冻结
+                        </Button>
                     </Col>
                     <Col span={8} style={{ textAlign: 'right' }}>
                         <Search

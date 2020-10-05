@@ -90,6 +90,17 @@ export default () => {
         setKeyword(searchInputValue)
     }
 
+    // 获取 ids
+    function getSelectedIdsArr(): string[] {
+        return selectedRowIds.split(',').filter(i => i)
+    }
+
+    // 是否选择了
+    function isSelectedEmpty(): boolean {
+        const ids = getSelectedIdsArr()
+        return ids.length === 0
+    }
+
     // 表格 - 分页
     function onPageIndexChange(pageIndex: number) {
         setPageIndex(pageIndex)
@@ -105,7 +116,7 @@ export default () => {
 
     // 强制下线
     function forceOffline() {
-        const ids = selectedRowIds.split(',').filter(i => i)
+        const ids = getSelectedIdsArr()
         const length = ids.length
         if (length === 0) return
 
@@ -136,7 +147,7 @@ export default () => {
 
     // 恢复
     function undoForceOffline() {
-        const ids = selectedRowIds.split(',').filter(i => i)
+        const ids = getSelectedIdsArr()
         const length = ids.length
         if (length === 0) return
 
@@ -184,10 +195,20 @@ export default () => {
             <div className={styles.tableButtonContainer}>
                 <Row>
                     <Col span={16}>
-                        <Button type="primary" danger onClick={forceOffline}>
+                        <Button
+                            type="primary"
+                            danger
+                            onClick={forceOffline}
+                            disabled={isSelectedEmpty()}
+                        >
                             强制下线
                         </Button>{' '}
-                        <Button onClick={undoForceOffline}>恢复</Button>
+                        <Button
+                            onClick={undoForceOffline}
+                            disabled={isSelectedEmpty()}
+                        >
+                            恢复
+                        </Button>
                     </Col>
                     <Col span={8} style={{ textAlign: 'right' }}>
                         <Search
