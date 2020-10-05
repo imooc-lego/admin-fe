@@ -8,6 +8,8 @@ const { Title } = Typography
 
 export default () => {
     // 初始化 state
+    const [createdCount, setCreatedCount] = useState(0)
+    const [publishedCount, setPublishedCount] = useState(0)
     const [pieOpt, setPieOpt] = useState({})
     const [monthlyOpt, setMonthlyOpt] = useState({})
 
@@ -26,23 +28,28 @@ export default () => {
 
     // 处理饼图的数据
     function parsePieOpt(data: Array<any>): any {
-        let createdCount = 0
-        let publishedCount = 0
+        let created = 0
+        let published = 0
         data.forEach((item: any) => {
             const itemData = item.data || {}
-            createdCount += itemData.created || 0
-            publishedCount += itemData.published || 0
+            created += itemData.created || 0
+            published += itemData.published || 0
         })
+
+        // 设置总数
+        setCreatedCount(created)
+        setPublishedCount(published)
+
         return {
             legend: {
-                data: ['创建', '发布'],
+                data: ['待发布', '发布'],
             },
             series: [
                 {
                     type: 'pie',
                     data: [
-                        { value: createdCount, name: '创建' },
-                        { value: publishedCount, name: '发布' },
+                        { value: created - published, name: '待发布' },
+                        { value: published, name: '发布' },
                     ],
                 },
             ],
@@ -74,7 +81,9 @@ export default () => {
         <>
             <Row>
                 <Col span={24}>
-                    <Title level={2}>作品总数 12000 ，发布 8600</Title>
+                    <Title level={2}>
+                        作品总数 {createdCount} ，发布 {publishedCount}
+                    </Title>
                 </Col>
             </Row>
             <Row>

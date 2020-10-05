@@ -1,15 +1,30 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Row, Col, Typography } from 'antd'
-import echarts from 'echarts'
 import styles from '../index.less'
+import Chart from '@/components/chart'
 
 const { Title } = Typography
 
 export default () => {
+    const [pv, setPV] = useState(0)
+    const [uv, setUV] = useState(0)
+    const [pvChartData, setPvChartData] = useState({})
+
     useEffect(() => {
-        // 每月作品总 PV
-        const h5PVChart = echarts.init(document.getElementById('chart-h5-pv'))
-        h5PVChart.setOption({
+        // 模拟一个请求，异步
+        setTimeout(() => {
+            // 总数
+            setPV(160000)
+            setUV(120000)
+
+            // 报表数据
+            const chartData = parsePvChartData()
+            setPvChartData(chartData)
+        })
+    }, [])
+
+    function parsePvChartData() {
+        return {
             tooltip: {
                 trigger: 'axis',
             },
@@ -36,14 +51,16 @@ export default () => {
                     data: [920, 932, 801, 934, 790, 900, 910],
                 },
             ],
-        })
-    }, [])
+        }
+    }
 
     return (
         <>
             <Row>
                 <Col span={24}>
-                    <Title level={2}>发布作品总 PV 160000 ，总 UV 120000</Title>
+                    <Title level={2}>
+                        发布作品总 PV {pv} ，总 UV {uv}
+                    </Title>
                 </Col>
             </Row>
             <Row>
@@ -51,10 +68,7 @@ export default () => {
                     <Title level={3} className={styles.center}>
                         每月作品总 PV
                     </Title>
-                    <div
-                        id="chart-h5-pv"
-                        className={styles.chartContainer}
-                    ></div>
+                    <Chart opt={pvChartData} />
                 </Col>
             </Row>
         </>
