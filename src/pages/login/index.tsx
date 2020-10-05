@@ -2,7 +2,7 @@ import React from 'react'
 import { history } from 'umi'
 import styles from './style.less'
 import { Form, Input, Button, Typography, message } from 'antd'
-import { getUserInfoService, loginService } from '@/service/user'
+import { getAdminInfo, login } from '@/service/admin'
 import { setAuthorizationToken } from '@/utils/ajax'
 
 const { Title } = Typography
@@ -22,12 +22,12 @@ interface LoginInfo {
 
 export default () => {
     // 如果已登录，则跳转到首页
-    getUserInfoService().then(() => history.push('/'))
+    getAdminInfo().then(() => history.push('/'))
 
     // 执行登录
     const onFinish = async (values: LoginInfo) => {
         const { username, password } = values
-        const data = await loginService(username, password)
+        const data = await login(username, password)
         const { token } = data
         if (token) {
             setAuthorizationToken(token) // 登录成功，保存 token

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { getUserInfoService } from '@/service/user'
+import { getAdminInfo } from '@/service/admin'
 
 export default () => {
     const [username, setUsername] = useState('')
     useEffect(() => {
-        getUserInfoService().then(userInfo => setUsername(userInfo.username))
+        getAdminInfo().then(info => setUsername(info.username))
     })
 
     return <div style={{ paddingRight: '20px' }}>当前用户: {username}</div>

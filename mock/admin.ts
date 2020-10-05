@@ -4,7 +4,7 @@
  */
 
 export default {
-    'GET /api/users/getUserInfo': {
+    'GET /api/admin/getUserInfo': {
         errno: 0,
         data: {
             username: '啦啦啦',
@@ -13,7 +13,7 @@ export default {
         // message: '未登录',
     },
 
-    'POST /api/users/login': {
+    'POST /api/admin/login': {
         errno: 0,
         data: {
             token: 'xxxxxx',

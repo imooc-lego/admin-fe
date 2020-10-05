@@ -1,5 +1,5 @@
 /**
- * @description 用户相关接口
+ * @description 管理员相关接口
  * @author 双越
  */
 
@@ -12,10 +12,10 @@ let USER_INFO: any
 /**
  * 获取用户信息
  */
-export async function getUserInfoService(): Promise<any> {
+export async function getAdminInfo(): Promise<any> {
     if (USER_INFO != null) return USER_INFO // 使用缓存
 
-    const url = `${host}/api/users/getUserInfo`
+    const url = `${host}/api/admin/getUserInfo`
     const data = await ajaxGet(url)
     USER_INFO = data // 缓存
     return data
@@ -26,11 +26,8 @@ export async function getUserInfoService(): Promise<any> {
  * @param username username
  * @param password password
  */
-export async function loginService(
-    username: string,
-    password: string,
-): Promise<any> {
-    const url = `${host}/api/users/login`
+export async function login(username: string, password: string): Promise<any> {
+    const url = `${host}/api/admin/login`
     const data = await ajaxPost(url, { username, password })
     return data
 }
