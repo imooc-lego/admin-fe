@@ -53,8 +53,9 @@ async function ajax(
     if (resData.errno === 0) return resData.data || {}
     console.error('请求错误', resData.errno, resData.message)
     message.error(resData.message) // 弹出错误
+    return null
 
-    // throw new Error(resData.message)
+    // throw new Error(resData.message) // 抛出错误，以便使用方能通过 catch 截获
 }
 
 /**

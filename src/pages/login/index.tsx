@@ -22,12 +22,20 @@ interface LoginInfo {
 
 export default () => {
     // 如果已登录，则跳转到首页
-    getAdminInfo().then(() => history.push('/'))
+    getAdminInfo()
+        .then(data => {
+            if (data == null) return
+            history.push('/')
+        })
+        .catch(ex => {
+            console.error(ex)
+        })
 
     // 执行登录
     const onFinish = async (values: LoginInfo) => {
         const { username, password } = values
         const data = await login(username, password)
+        if (data == null) return
         const { token } = data
         if (token) {
             setAuthorizationToken(token) // 登录成功，保存 token

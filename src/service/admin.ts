@@ -16,6 +16,7 @@ export async function getAdminInfo(): Promise<any> {
     if (USER_INFO != null) return USER_INFO // 使用缓存
 
     const url = `${APIHost}/api/admin/getUserInfo`
+
     const data = await ajaxGet(url)
     USER_INFO = data // 缓存
     return data

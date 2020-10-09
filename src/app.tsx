@@ -4,12 +4,18 @@ import { getAdminInfo } from '@/service/admin'
 import UserInfo from '@/components/userInfo'
 
 export async function render(oldRender: Function) {
-    try {
-        await getAdminInfo()
-        oldRender()
-    } catch (ex) {
+    function redirectToLogin() {
         history.push('/login')
         oldRender()
+    }
+
+    try {
+        const data = await getAdminInfo()
+        if (data == null) redirectToLogin()
+        oldRender()
+    } catch (ex) {
+        console.error(ex)
+        redirectToLogin()
     }
 }
 
