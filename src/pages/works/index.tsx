@@ -180,7 +180,7 @@ export default () => {
     // 修改表格数据的的 status
     function changeStatus(ids: string[], status: string) {
         const newDataSource = dataSource.map((item: any) => {
-            const curId = item.id
+            const curId = item.id.toString()
             if (!ids.includes(curId)) return item
             return {
                 ...item,

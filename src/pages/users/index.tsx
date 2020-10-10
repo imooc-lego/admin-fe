@@ -101,7 +101,7 @@ export default () => {
     // 修改表格冻结数据
     function changeFrozenState(ids: string[], isFrozen: boolean) {
         const newDataSource = dataSource.map((item: any) => {
-            const curId = item.id
+            const curId = item.id.toString()
             if (!ids.includes(curId)) return item
             return {
                 ...item,

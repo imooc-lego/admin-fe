@@ -220,7 +220,7 @@ export default () => {
         changedData[key] = value
 
         const newDataSource = dataSource.map((item: any) => {
-            const curId = item.id
+            const curId = item.id.toString()
             if (!ids.includes(curId)) return item
             return {
                 ...item,
