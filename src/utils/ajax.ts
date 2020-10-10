@@ -3,10 +3,14 @@
  * @author 双越
  */
 
+import _ from 'lodash'
 import { message } from 'antd'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 import { getItem, setItem } from './localStorage'
 import { TOKEN_KEY_LOCAL_STORAGE } from '../config/constants'
+
+// 防抖处理
+const messageError = _.debounce(message.error, 500)
 
 /**
  * 设置 jwt token 到 localStorage
@@ -45,14 +49,14 @@ async function ajax(
     const res = await axios(conf)
     if (res.status !== 200) {
         console.error(res)
-        message.error('请求状态码错误') // 弹出错误
+        messageError('请求状态码错误') // 弹出错误
     }
 
     // 处理结果
     const { data: resData } = res
     if (resData.errno === 0) return resData.data || {}
     console.error('请求错误', resData.errno, resData.message)
-    message.error(resData.message) // 弹出错误
+    messageError(resData.message) // 弹出错误
     return null
 
     // throw new Error(resData.message) // 抛出错误，以便使用方能通过 catch 截获
