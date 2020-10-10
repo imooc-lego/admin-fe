@@ -58,7 +58,7 @@ export async function setPublic(ids: string[], isPublic: boolean) {
  * @param isNew isNew
  */
 export async function setNew(ids: string[], isNew: boolean) {
-    const url = `${APIHost}/api/template/istNew`
+    const url = `${APIHost}/api/template/isNew`
     const data = await ajaxPatch(url, { ids: ids.join(','), isNew })
     return data
 }

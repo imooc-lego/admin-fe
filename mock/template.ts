@@ -112,7 +112,7 @@ export default {
     },
 
     // 修改 new
-    'PATCH /api/template/istNew': {
+    'PATCH /api/template/isNew': {
         errno: 0,
     },
 
