@@ -232,7 +232,9 @@ export default () => {
 
     // 根据 ids 获取作品
     function getTemplatesByIds(ids: string[]) {
-        return dataSource.filter((item: any) => ids.includes(item.id))
+        return dataSource.filter((item: any) =>
+            ids.includes(item.id.toString()),
+        )
     }
 
     return (
