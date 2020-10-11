@@ -8,6 +8,7 @@ export default {
         errno: 0,
         data: {
             count: 3001,
+            active: 2200,
         },
     },
 
@@ -42,36 +43,36 @@ export default {
         ],
     },
 
-    // 获取每月活跃的用户
-    'GET /api/users/getActiveCountMonthly': {
-        errno: 0,
-        data: [
-            {
-                month: '2020-08',
-                data: {
-                    count: 100,
-                },
-            },
-            {
-                month: '2020-09',
-                data: {
-                    count: 260,
-                },
-            },
-            {
-                month: '2020-10',
-                data: {
-                    count: 290,
-                },
-            },
-            {
-                month: '2020-11',
-                data: {
-                    count: 190,
-                },
-            },
-        ],
-    },
+    // // 获取每月活跃的用户
+    // 'GET /api/users/getActiveCountMonthly': {
+    //     errno: 0,
+    //     data: [
+    //         {
+    //             month: '2020-08',
+    //             data: {
+    //                 count: 100,
+    //             },
+    //         },
+    //         {
+    //             month: '2020-09',
+    //             data: {
+    //                 count: 260,
+    //             },
+    //         },
+    //         {
+    //             month: '2020-10',
+    //             data: {
+    //                 count: 290,
+    //             },
+    //         },
+    //         {
+    //             month: '2020-11',
+    //             data: {
+    //                 count: 190,
+    //             },
+    //         },
+    //     ],
+    // },
 
     // 获取用户列表
     'GET /api/users/': {

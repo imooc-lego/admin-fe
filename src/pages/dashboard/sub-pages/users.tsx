@@ -2,31 +2,32 @@ import React, { useEffect, useState } from 'react'
 import { Row, Col, Typography } from 'antd'
 import styles from '../index.less'
 import Chart from '@/components/chart'
-import {
-    getCount,
-    getCreatedCountMonthly,
-    getActiveCountMonthly,
-} from '@/service/users'
+import { getCount, getCreatedCountMonthly } from '@/service/users'
 
 const { Title } = Typography
 
 export default () => {
     const [createdCount, setCreatedCount] = useState(0)
+    const [activeCount, setActiveCount] = useState(0)
     const [createdChartData, setCreatedChartData] = useState({})
-    const [activeChartData, setActiveChartData] = useState({})
+    const [pieChartData, setPieChartData] = useState({})
 
     useEffect(() => {
         // 总数
-        getCount().then(data => setCreatedCount(data.count))
+        getCount().then(data => {
+            const { count, active } = data
+            setCreatedCount(count)
+            setActiveCount(active)
+
+            // 饼图
+            const pieData = parsePieOpt(count, active)
+            setPieChartData(pieData)
+        })
 
         // 报表
         getCreatedCountMonthly().then((data: Array<object>) => {
             const chartData = parseCreatedChartData(data)
             setCreatedChartData(chartData)
-        })
-        getActiveCountMonthly().then((data: Array<object>) => {
-            const chartData = parseActiveChartData(data)
-            setActiveChartData(chartData)
         })
     }, [])
 
@@ -43,27 +44,26 @@ export default () => {
             series: [
                 {
                     name: '新增用户',
-                    type: 'bar',
+                    type: 'line',
                     data: seriesArr,
                 },
             ],
         }
     }
 
-    function parseActiveChartData(data: Array<any>) {
-        const xArr = data.map(item => item.month)
-        const seriesArr = data.map(item => item.data.count)
-
+    // 处理饼图的数据
+    function parsePieOpt(count = 0, active = 0): any {
         return {
-            tooltip: {},
-            xAxis: {
-                data: xArr,
+            legend: {
+                data: ['非活跃', '活跃'],
             },
-            yAxis: {},
             series: [
                 {
-                    type: 'line',
-                    data: seriesArr,
+                    type: 'pie',
+                    data: [
+                        { value: active, name: '活跃' },
+                        { value: count - active, name: '非活跃' },
+                    ],
                 },
             ],
         }
@@ -73,7 +73,9 @@ export default () => {
         <>
             <Row>
                 <Col span={24}>
-                    <Title level={2}>用户总数 {createdCount}</Title>
+                    <Title level={2}>
+                        用户总数 {createdCount}，活跃用户 {activeCount}
+                    </Title>
                 </Col>
             </Row>
             <Row>
@@ -85,9 +87,9 @@ export default () => {
                 </Col>
                 <Col span={12}>
                     <Title level={3} className={styles.center}>
-                        每月活跃用户
+                        活跃用户占比
                     </Title>
-                    <Chart opt={activeChartData}></Chart>
+                    <Chart opt={pieChartData}></Chart>
                 </Col>
             </Row>
         </>

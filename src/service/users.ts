@@ -25,14 +25,14 @@ export async function getCreatedCountMonthly() {
     return data
 }
 
-/**
- * 获取每月活跃用户
- */
-export async function getActiveCountMonthly() {
-    const url = `${APIHost}/api/users/getActiveCountMonthly`
-    const data = await ajaxGet(url)
-    return data
-}
+// /**
+//  * 获取每月活跃用户
+//  */
+// export async function getActiveCountMonthly() {
+//     const url = `${APIHost}/api/users/getActiveCountMonthly`
+//     const data = await ajaxGet(url)
+//     return data
+// }
 
 /**
  * 查询用户列表
