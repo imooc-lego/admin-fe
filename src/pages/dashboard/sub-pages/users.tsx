@@ -33,7 +33,7 @@ export default () => {
 
     function parseCreatedChartData(data: Array<any>) {
         const xArr = data.map(item => item.month)
-        const seriesArr = data.map(item => item.data.count)
+        const seriesArr = data.map(item => item.count)
 
         return {
             tooltip: {},

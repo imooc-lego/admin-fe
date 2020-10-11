@@ -18,27 +18,19 @@ export default {
         data: [
             {
                 month: '2020-08',
-                data: {
-                    count: 120,
-                },
+                count: 120,
             },
             {
                 month: '2020-09',
-                data: {
-                    count: 300,
-                },
+                count: 300,
             },
             {
                 month: '2020-10',
-                data: {
-                    count: 330,
-                },
+                count: 330,
             },
             {
                 month: '2020-11',
-                data: {
-                    count: 290,
-                },
+                count: 290,
             },
         ],
     },
