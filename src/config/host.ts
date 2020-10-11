@@ -15,4 +15,8 @@ if (isPrd) APIHost = 'yyy' // TODO 线上环境
 let H5Host = 'http://182.92.168.192:8082'
 if (isPrd) H5Host = 'https://www.imooc-lego.com'
 
-export { APIHost, H5Host }
+// 统计接口的 host
+let StatHost = 'http://182.92.168.192:8080'
+if (isPrd) StatHost = 'xxx' // TODO 线上环境
+
+export { APIHost, H5Host, StatHost }

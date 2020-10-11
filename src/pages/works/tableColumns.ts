@@ -3,7 +3,7 @@
  * @author 双越
  */
 
-import { formatDate } from '@/utils/date'
+import { formatTime } from '@/utils/date'
 
 export default [
     {
@@ -61,7 +61,7 @@ export default [
         dataIndex: 'createdAt',
         key: 'createdAt',
         render: (d: string) => {
-            return formatDate(d)
+            return formatTime(d)
         },
     },
     {
@@ -69,7 +69,7 @@ export default [
         dataIndex: 'latestPublishAt',
         key: 'latestPublishAt',
         render: (d: string) => {
-            return formatDate(d)
+            return formatTime(d)
         },
     },
 ]

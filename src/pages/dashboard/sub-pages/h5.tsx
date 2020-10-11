@@ -2,53 +2,56 @@ import React, { useEffect, useState } from 'react'
 import { Row, Col, Typography } from 'antd'
 import styles from '../index.less'
 import Chart from '@/components/chart'
+import { getPV } from '@/service/stat'
+import { formatDay } from '@/utils/date'
 
 const { Title } = Typography
 
 export default () => {
     const [pv, setPV] = useState(0)
-    const [uv, setUV] = useState(0)
     const [pvChartData, setPvChartData] = useState({})
 
     useEffect(() => {
-        // 模拟一个请求，异步
-        setTimeout(() => {
-            // 总数
-            setPV(160000)
-            setUV(120000)
+        // 一年的时间范围
+        const d = new Date()
+        const startTime = new Date(d.getTime() - 365 * 24 * 60 * 60 * 1000) // 一年之前
+        const endTime = d
+        // 获取 pv
+        getPV(startTime, endTime).then(data => {
+            console.log(data)
+
+            // 计算总数
+            let pvSum = 0
+            data.forEach((item: any) => (pvSum += item.eventData.pv))
+            setPV(pvSum)
 
             // 报表数据
-            const chartData = parsePvChartData()
+            const sourceData = data.map((item: any) => {
+                return {
+                    day: formatDay(item.eventDate),
+                    pv: item.eventData.pv,
+                }
+            })
+            const chartData = parsePvChartData(sourceData)
             setPvChartData(chartData)
         })
     }, [])
 
-    function parsePvChartData() {
+    function parsePvChartData(data: Array<any>): any {
+        const xArr = data.map(item => item.day)
+        const seriesArr = data.map(item => item.pv)
+
         return {
-            tooltip: {
-                trigger: 'axis',
-            },
-            legend: {
-                data: ['PV', 'UV'],
-            },
+            tooltip: {},
             xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['2020-08', '2020-09', '2020-10', '2020-11'],
+                data: xArr,
             },
-            yAxis: {
-                type: 'value',
-            },
+            yAxis: {},
             series: [
                 {
-                    name: 'PV',
+                    name: '新增用户',
                     type: 'line',
-                    data: [1220, 1382, 1191, 1234, 1290, 1330, 1310],
-                },
-                {
-                    name: 'UV',
-                    type: 'line',
-                    data: [920, 932, 801, 934, 790, 900, 910],
+                    data: seriesArr,
                 },
             ],
         }
@@ -58,15 +61,13 @@ export default () => {
         <>
             <Row>
                 <Col span={24}>
-                    <Title level={2}>
-                        发布作品总 PV {pv} ，总 UV {uv}
-                    </Title>
+                    <Title level={2}>发布作品的总 PV {pv}</Title>
                 </Col>
             </Row>
             <Row>
                 <Col span={24}>
                     <Title level={3} className={styles.center}>
-                        每月作品总 PV
+                        每日 PV 走势
                     </Title>
                     <Chart opt={pvChartData} />
                 </Col>
