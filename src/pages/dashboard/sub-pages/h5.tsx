@@ -18,8 +18,6 @@ export default () => {
         const endTime = d
         // 获取 pv
         getPV(startTime, endTime).then(data => {
-            console.log(data)
-
             // 计算总数
             let pvSum = 0
             data.forEach((item: any) => (pvSum += item.eventData.pv))
