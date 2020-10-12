@@ -1,0 +1,53 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# github actions 中文文档 https://docs.github.com/cn/actions/getting-started-with-github-actions
+
+name: deploy for dev
+
+on:
+    push:
+        branches:
+            - 'dev' # 只针对 dev 分支
+        paths:
+            - '.github/workflows/*'
+            - '__test__/**'
+            - 'src/**'
+            - 'config/*'
+            - 'Dockerfile'
+            - 'docker-compose.yml'
+            - 'nginx.conf'
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 14
+            - name: set ssh key # 临时设置 ssh key
+              run: |
+                  mkdir -p ~/.ssh/
+                  echo "${{secrets.WFP_ID_RSA}}" > ~/.ssh/id_rsa # secret 在这里配置 https://github.com/imooc-lego/admin-fe/settings/secrets
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan "182.92.168.192" >> ~/.ssh/known_hosts
+            - name: deploy # 部署
+              run: |
+                  ssh work@182.92.168.192 "
+                    # 【注意】事先 git clone admin-fe（dev 分支）
+                    cd /home/work/imooc-lego/admin-fe;
+                    git checkout dev;
+                    git pull origin dev; # 重新下载最新代码
+
+                    # 构建
+                    npm i;
+                    npm run build;
+
+                    # 启动 docker
+                    docker-compose build admin-fe; # 和 docker-compose.yml service 名字一致
+                    docker-compose up -d;
+                  "
+            - name: delete ssh key # 删除 ssh key
+              run: rm -rf ~/.ssh/id_rsa

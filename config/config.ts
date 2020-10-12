@@ -2,7 +2,7 @@ import { defineConfig } from 'umi'
 import routes from './routes'
 
 export default defineConfig({
-    publicPath: '/public/',
+    publicPath: '/',
     favicon: '/logo.png',
     hash: true,
     history: {

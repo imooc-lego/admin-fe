@@ -1,0 +1,11 @@
+version: '3'
+services:
+    admin-fe:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: admin-fe # 引用官网 nginx 镜像
+        container_name: admin-fe
+        ports:
+            - 8085:80 # 宿主机可以用 127.0.0.1:8085 即可连接容器中的数据库
+        # volumes: 在 Dockerfile 都已配置完
