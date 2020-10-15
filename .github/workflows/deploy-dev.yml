@@ -36,14 +36,15 @@ jobs:
             - name: deploy # 部署
               run: |
                   ssh work@182.92.168.192 "
-                    # 【注意】事先 git clone admin-fe（dev 分支）
+                    # 【注意】手动创建 /home/work/imooc-lego 目录
+                    # 然后 git clone https://username:password@github.com/imooc-lego/admin-fe.git -b dev （私有项目，使用 github 用户名和密码下载）
                     cd /home/work/imooc-lego/admin-fe;
                     git checkout dev;
                     git pull origin dev; # 重新下载最新代码
 
                     # 构建 prd-dev
                     npm i;
-                    npm run prd-dev;
+                    npm run build-dev;
 
                     # 启动 docker
                     docker-compose build admin-fe; # 和 docker-compose.yml service 名字一致
