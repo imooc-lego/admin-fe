@@ -18,7 +18,7 @@ on:
             - 'nginx.conf'
 
 jobs:
-    test:
+    deploy:
         runs-on: ubuntu-latest
 
         steps:
@@ -38,9 +38,13 @@ jobs:
                   ssh work@182.92.168.192 "
                     # 【注意】手动创建 /home/work/imooc-lego 目录
                     # 然后 git clone https://username:password@github.com/imooc-lego/admin-fe.git -b dev （私有项目，使用 github 用户名和密码下载）
+                    # 记得删除 origin ，否则会暴露 github 密码
+
                     cd /home/work/imooc-lego/admin-fe;
+                    git remote add origin https://wangfupeng1988:${{secrets.WFP_PASSWORD}}@github.com/imooc-lego/admin-fe.git;
                     git checkout dev;
                     git pull origin dev; # 重新下载最新代码
+                    git remote remove origin; # 删除 origin ，否则会暴露 github 密码
 
                     # 构建 prd-dev
                     npm i;
