@@ -19,11 +19,6 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: 12 # 尽量和线上机 node 版本保持一直
-            - name: lint and test # 测试
-              run: |
-                  npm i
-                  npm run lint
-                  npm run test
             - name: set ssh key # 临时设置 ssh key
               run: |
                   mkdir -p ~/.ssh/
