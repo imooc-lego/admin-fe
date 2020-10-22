@@ -27,6 +27,7 @@ git checkout . # 撤销一切文件改动，否则可能导致 pull 失败
 
 git remote add origin "$repoGitUrl"
 git pull origin master # 下载最新 master 代码，tag 都是基于 master 分支提交的
+git fetch --tags # 获取所有 tags 。否则，光执行 git pull origin master 获取不到新提交的 tag
 git remote remove origin; # 删除 origin ，否则会暴露 github 密码
 
 # 切换到 tag ，重要！！！
