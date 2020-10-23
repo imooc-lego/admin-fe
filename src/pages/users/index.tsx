@@ -134,7 +134,7 @@ export default () => {
                     <Col span={8} style={{ textAlign: 'right' }}>
                         <Search
                             value={searchInputValue}
-                            placeholder="输入 用户名/手机号/昵称"
+                            placeholder="输入 id/用户名/手机号/昵称"
                             onSearch={onSearch}
                             onChange={e => setSearchInputValue(e.target.value)}
                             enterButton

@@ -316,7 +316,7 @@ export default () => {
                         <Col span={8} style={{ textAlign: 'right' }}>
                             <Search
                                 value={searchInputValue}
-                                placeholder="输入 id/标题"
+                                placeholder="输入 id/标题/作者用户名"
                                 onSearch={onSearch}
                                 onChange={e =>
                                     setSearchInputValue(e.target.value)
