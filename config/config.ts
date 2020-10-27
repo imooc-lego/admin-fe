@@ -20,4 +20,6 @@ export default defineConfig({
     define: {
         'process.env.ENV': 'dev',
     },
+
+    locale: {},
 })
