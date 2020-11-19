@@ -35,7 +35,7 @@ git checkout "$2"
 echo =================== git checkout "$2" ===================
 
 # 安装依赖
-npm install
+npm install --registry=https://registry.npm.taobao.org
 
 ## 打包构建
 npm run build
