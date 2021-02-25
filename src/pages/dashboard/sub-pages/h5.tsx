@@ -47,7 +47,7 @@ export default () => {
             yAxis: {},
             series: [
                 {
-                    name: '新增用户',
+                    name: 'PV',
                     type: 'line',
                     data: seriesArr,
                 },
