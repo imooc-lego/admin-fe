@@ -14,3 +14,5 @@
 域名 `admin.imooc-lego.com`
 
 IP `120.27.246.165:8000`
+
+test
